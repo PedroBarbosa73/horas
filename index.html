@@ -233,6 +233,8 @@
     /* ════════════════════════════════════════════════
        PRINT / PDF STYLES
     ════════════════════════════════════════════════ */
+    @page { margin: 1.5cm; }
+
     @media print {
       * {
         -webkit-print-color-adjust: exact !important;
@@ -729,8 +731,7 @@ function buildReport() {
     <div><strong>Período:</strong> ${fromDate} – ${toDate}</div>
     <div><strong>Emitida em:</strong> ${fmtDate(todayStr(), {day:'numeric', month:'long', year:'numeric'})}</div>
   `;
-  document.getElementById('invoiceFooter').innerHTML =
-    `Obrigado pela preferência. · ${settings.yourName || ''}`;
+  document.getElementById('invoiceFooter').innerHTML = '';
 
   let html = `<div class="summary-grid">
     <div class="summary-box">
