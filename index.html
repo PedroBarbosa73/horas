@@ -271,7 +271,8 @@
       .summary-box-label { font-size: 10px !important; color: #666 !important; }
       .c-accent, .c-yellow, .c-green { color: #111 !important; }
 
-      .report-section { border: 1px solid #ccc !important; padding: 14px; margin-bottom: 14px; background: #fff !important; }
+      .report-section { border: 1px solid #ccc !important; padding: 14px; margin-bottom: 14px; background: #fff !important; break-inside: avoid; page-break-inside: avoid; }
+      .report-section-expenses { page-break-before: always; break-before: page; }
       .report-section-title { font-size: 10px !important; color: #666 !important; margin-bottom: 10px; }
       .report-section[style*="surface2"] { background: #f0f0f0 !important; }
 
@@ -780,7 +781,7 @@ function buildReport() {
   }
 
   if (filtExpenses.length) {
-    html += `<div class="report-section">
+    html += `<div class="report-section report-section-expenses">
       <div class="report-section-title">Despesas</div>
       <table>
         <thead><tr><th>Data</th><th>Descrição</th><th style="text-align:right">Valor</th></tr></thead>
