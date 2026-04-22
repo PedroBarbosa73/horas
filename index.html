@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -129,14 +129,14 @@
     }
     .btn-del:hover { color: var(--red); }
 
-    /* ── Expense Form ────────────────────────────── */
+    /* ── Form card ───────────────────────────────── */
     .form-card {
       background: var(--surface); border: 1px solid var(--border);
       border-radius: var(--radius); padding: 18px; margin-bottom: 16px;
     }
     .form-title { font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; }
     .form-row { display: flex; gap: 10px; flex-wrap: wrap; }
-    .form-group { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 140px; }
+    .form-group { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 120px; }
     .form-group label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
     .form-control {
       background: var(--bg); border: 1px solid var(--border);
@@ -145,7 +145,6 @@
     }
     .form-control:focus { outline: none; border-color: var(--accent); }
     .form-control::placeholder { color: var(--border); }
-    .form-submit { align-self: flex-end; margin-top: 16px; }
 
     /* ── Expense List ────────────────────────────── */
     .expense-item {
@@ -229,13 +228,12 @@
       border-radius: 6px; padding: 8px 11px; color: var(--text); font-size: 13px;
     }
     .note-input:focus { outline: none; border-color: var(--accent); }
-    .note-input::placeholder { color: var(--border); }
+    .note-input::placeholder { color: var(--muted); }
 
     /* ════════════════════════════════════════════════
        PRINT / PDF STYLES
     ════════════════════════════════════════════════ */
     @media print {
-      /* Force all colours to light theme — override CSS variables */
       * {
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
@@ -250,12 +248,10 @@
       .no-print { display: none !important; }
       .container { max-width: 100%; padding: 0 16px; }
 
-      /* Hide everything except the report pane */
       .timer-card, .tabs, #pane-sessions, #pane-expenses { display: none !important; }
       #pane-report { display: block !important; }
       .report-controls, .btn-print { display: none !important; }
 
-      /* Invoice header */
       .invoice-header {
         display: flex !important;
         justify-content: space-between;
@@ -267,14 +263,12 @@
       .invoice-title { font-size: 32px !important; font-weight: 700; }
       .invoice-meta { text-align: right; font-size: 12px; line-height: 1.8; }
 
-      /* Summary boxes */
       .summary-grid { margin-bottom: 20px; }
       .summary-box { border: 1px solid #ccc !important; background: #f5f5f5 !important; padding: 14px; }
       .summary-box-value { font-size: 20px !important; font-weight: 700; }
       .summary-box-label { font-size: 10px !important; color: #666 !important; }
       .c-accent, .c-yellow, .c-green { color: #111 !important; }
 
-      /* Report sections */
       .report-section { border: 1px solid #ccc !important; padding: 14px; margin-bottom: 14px; background: #fff !important; }
       .report-section-title { font-size: 10px !important; color: #666 !important; margin-bottom: 10px; }
       .report-section[style*="surface2"] { background: #f0f0f0 !important; }
@@ -282,20 +276,14 @@
       table { width: 100%; border-collapse: collapse; }
       th { color: #555 !important; font-size: 10px !important; border-bottom: 1px solid #ccc !important; padding: 6px 8px; }
       td { padding: 7px 8px; border-bottom: 1px solid #eee !important; font-size: 12px; }
-      td[style*="muted"] { color: #666 !important; }
 
-      /* Grand total row */
       .report-section span { color: #111 !important; }
 
-      /* Footer */
       .invoice-footer {
         display: block !important;
-        margin-top: 32px;
-        padding-top: 14px;
+        margin-top: 32px; padding-top: 14px;
         border-top: 1px solid #ccc !important;
-        font-size: 11px;
-        color: #888 !important;
-        text-align: center;
+        font-size: 11px; color: #888 !important; text-align: center;
       }
     }
     .invoice-header { display: none; }
@@ -307,22 +295,22 @@
 <!-- Settings Modal -->
 <div class="modal-overlay no-print" id="settingsModal">
   <div class="modal">
-    <div class="modal-title">Settings</div>
+    <div class="modal-title">Configurações</div>
     <div class="form-group" style="margin-bottom:12px">
-      <label>Your Name</label>
-      <input class="form-control" id="cfg-yourName" placeholder="Pedro Silva">
+      <label>O Teu Nome</label>
+      <input class="form-control" id="cfg-yourName" placeholder="Pedro Barbosa">
     </div>
     <div class="form-group" style="margin-bottom:12px">
-      <label>Client Name</label>
-      <input class="form-control" id="cfg-clientName" placeholder="Acme Corp">
+      <label>Nome do Cliente</label>
+      <input class="form-control" id="cfg-clientName" placeholder="Acme Lda">
     </div>
     <div class="form-row">
       <div class="form-group">
-        <label>Hourly Rate</label>
-        <input class="form-control" id="cfg-rate" type="number" min="0" placeholder="50">
+        <label>Valor/Hora</label>
+        <input class="form-control" id="cfg-rate" type="number" min="0" placeholder="25">
       </div>
       <div class="form-group">
-        <label>Currency</label>
+        <label>Moeda</label>
         <select class="form-control" id="cfg-currency">
           <option value="EUR">EUR €</option>
           <option value="USD">USD $</option>
@@ -332,8 +320,8 @@
       </div>
     </div>
     <div class="modal-footer">
-      <button class="btn-outline" onclick="closeSettings()">Cancel</button>
-      <button class="btn btn-start" onclick="saveSettings()">Save</button>
+      <button class="btn-outline" onclick="closeSettings()">Cancelar</button>
+      <button class="btn btn-start" onclick="saveSettings()">Guardar</button>
     </div>
   </div>
 </div>
@@ -343,14 +331,14 @@
   <div class="logo">⏱ Horas</div>
   <div class="header-right">
     <span class="today-label" id="headerDate"></span>
-    <button class="btn-gear" onclick="openSettings()" title="Settings">⚙</button>
+    <button class="btn-gear" onclick="openSettings()" title="Configurações">⚙</button>
   </div>
 </div>
 
 <!-- Invoice Header (print only) -->
 <div class="invoice-header" id="invoiceHeader">
   <div>
-    <div class="invoice-title">INVOICE</div>
+    <div class="invoice-title">FATURA</div>
     <div style="font-size:13px;color:#444;margin-top:6px" id="invoiceFrom"></div>
   </div>
   <div class="invoice-meta" id="invoiceMeta"></div>
@@ -361,65 +349,90 @@
   <!-- Timer Card -->
   <div class="timer-card no-print">
     <div class="timer-display idle" id="timerDisplay">00:00:00</div>
-    <div class="timer-status" id="timerStatus">ready</div>
+    <div class="timer-status" id="timerStatus">pronto</div>
     <div class="timer-buttons">
-      <button class="btn btn-start"  id="btnStart"  onclick="timerStart()">▶ Start</button>
-      <button class="btn btn-pause"  id="btnPause"  onclick="timerPause()" disabled>⏸ Pause</button>
-      <button class="btn btn-stop"   id="btnStop"   onclick="timerStop()"  disabled>■ Stop</button>
+      <button class="btn btn-start" id="btnStart" onclick="timerStart()">▶ Iniciar</button>
+      <button class="btn btn-pause" id="btnPause" onclick="timerPause()" disabled>⏸ Pausar</button>
+      <button class="btn btn-stop"  id="btnStop"  onclick="timerStop()"  disabled>■ Parar</button>
     </div>
     <div class="note-row" id="noteRow" style="display:none">
-      <input class="note-input" id="sessionNote" placeholder="What did you work on? (optional)" />
-      <button class="btn btn-start" onclick="confirmStop()">Save</button>
-      <button class="btn-outline" style="padding:8px 14px;border-radius:6px;font-size:13px" onclick="cancelStop()">Cancel</button>
+      <input class="note-input" id="sessionNote" placeholder="Em que trabalhaste? (opcional)" />
+      <button class="btn btn-start" onclick="confirmStop()">Guardar</button>
+      <button class="btn-outline" style="padding:8px 14px;border-radius:6px;font-size:13px" onclick="cancelStop()">Cancelar</button>
     </div>
     <div class="today-stats">
       <div class="stat">
         <div class="stat-value c-accent" id="statTodayHours">0h 00m</div>
-        <div class="stat-label">Today</div>
+        <div class="stat-label">Hoje</div>
       </div>
       <div class="stat">
         <div class="stat-value" id="statWeekHours">0h 00m</div>
-        <div class="stat-label">This Week</div>
+        <div class="stat-label">Esta Semana</div>
       </div>
       <div class="stat">
         <div class="stat-value c-yellow" id="statTodayExpenses">€0.00</div>
-        <div class="stat-label">Expenses Today</div>
+        <div class="stat-label">Despesas Hoje</div>
       </div>
     </div>
   </div>
 
   <!-- Tabs -->
   <div class="tabs no-print">
-    <button class="tab active" onclick="switchTab('sessions', this)">Sessions</button>
-    <button class="tab"        onclick="switchTab('expenses', this)">Expenses</button>
-    <button class="tab"        onclick="switchTab('report',   this)">Report / Invoice</button>
+    <button class="tab active" onclick="switchTab('sessions', this)">Sessões</button>
+    <button class="tab"        onclick="switchTab('expenses', this)">Despesas</button>
+    <button class="tab"        onclick="switchTab('report',   this)">Relatório / Fatura</button>
   </div>
 
   <!-- Sessions Pane -->
   <div class="tab-pane active" id="pane-sessions">
+    <!-- Manual session entry -->
+    <div class="form-card">
+      <div class="form-title">Adicionar Sessão Manual</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Data</label>
+          <input class="form-control" id="man-date" type="date">
+        </div>
+        <div class="form-group">
+          <label>Início</label>
+          <input class="form-control" id="man-start" type="time" placeholder="09:00">
+        </div>
+        <div class="form-group">
+          <label>Fim</label>
+          <input class="form-control" id="man-end" type="time" placeholder="17:00">
+        </div>
+        <div class="form-group" style="flex:2">
+          <label>Nota</label>
+          <input class="form-control" id="man-note" placeholder="Descrição do trabalho">
+        </div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;margin-top:12px">
+        <button class="btn btn-start" onclick="addManualSession()">+ Adicionar</button>
+      </div>
+    </div>
     <div class="sessions-list" id="sessionsList"></div>
   </div>
 
   <!-- Expenses Pane -->
   <div class="tab-pane" id="pane-expenses">
     <div class="form-card">
-      <div class="form-title">Add Expense</div>
+      <div class="form-title">Adicionar Despesa</div>
       <div class="form-row">
         <div class="form-group" style="flex:2">
-          <label>Description</label>
-          <input class="form-control" id="exp-desc" placeholder="Claude Pro subscription">
+          <label>Descrição</label>
+          <input class="form-control" id="exp-desc" placeholder="Subscrição Claude Pro">
         </div>
         <div class="form-group">
-          <label>Amount</label>
+          <label>Valor</label>
           <input class="form-control" id="exp-amount" type="number" min="0" step="0.01" placeholder="20.00">
         </div>
         <div class="form-group">
-          <label>Date</label>
+          <label>Data</label>
           <input class="form-control" id="exp-date" type="date">
         </div>
       </div>
       <div style="display:flex;justify-content:flex-end;margin-top:12px">
-        <button class="btn btn-start" onclick="addExpense()">+ Add</button>
+        <button class="btn btn-start" onclick="addExpense()">+ Adicionar</button>
       </div>
     </div>
     <div id="expensesList"></div>
@@ -429,38 +442,35 @@
   <div class="tab-pane" id="pane-report">
     <div class="report-controls no-print">
       <div class="form-group">
-        <label>From</label>
+        <label>De</label>
         <input class="form-control" id="rep-from" type="date">
       </div>
       <div class="form-group">
-        <label>To</label>
+        <label>Até</label>
         <input class="form-control" id="rep-to" type="date">
       </div>
-      <button class="btn btn-start" onclick="buildReport()">Generate</button>
-      <button class="btn-print" onclick="printReport()">🖨 Print / Save PDF</button>
+      <button class="btn btn-start" onclick="buildReport()">Gerar</button>
+      <button class="btn-print" onclick="printReport()">🖨 Imprimir / PDF</button>
     </div>
     <div id="reportOutput"></div>
     <div class="invoice-footer" id="invoiceFooter"></div>
   </div>
 
-</div><!-- /container -->
+</div>
 
 <script>
-// ─── Storage helpers ──────────────────────────────────────────────────────────
 const S = {
   get: k => { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
   set: (k, v) => localStorage.setItem(k, JSON.stringify(v)),
 };
 
-// ─── State ────────────────────────────────────────────────────────────────────
-let timer = S.get('timerState') || { running: false, startTime: null, accumulated: 0 };
-let sessions = S.get('sessions') || [];
-let expenses = S.get('expenses') || [];
-let settings = S.get('settings') || { yourName: '', clientName: 'Client', rate: 0, currency: 'EUR' };
+let timer    = S.get('timerState') || { running: false, startTime: null, accumulated: 0 };
+let sessions = S.get('sessions')   || [];
+let expenses = S.get('expenses')   || [];
+let settings = S.get('settings')   || { yourName: '', clientName: 'Cliente', rate: 0, currency: 'EUR' };
 let ticker = null;
 let stopPending = false;
 
-// ─── Utils ────────────────────────────────────────────────────────────────────
 const fmtMs = ms => {
   const s = Math.floor(ms / 1000);
   const h = Math.floor(s / 3600);
@@ -483,36 +493,31 @@ const weekStart = () => {
 const currSymbol = c => ({ EUR: '€', USD: '$', GBP: '£', BRL: 'R$' }[c] || c);
 const uid = () => Math.random().toString(36).slice(2);
 const fmtMoney = (n, c) => `${currSymbol(c)}${Number(n).toFixed(2)}`;
+const fmtDate = (dateStr, opts) => new Date(dateStr+'T12:00').toLocaleDateString('pt-PT', opts);
 
-function saveTimer()   { S.set('timerState', timer); }
-function saveSessions(){ S.set('sessions', sessions); }
-function saveExpenses(){ S.set('expenses', expenses); }
+function saveTimer()    { S.set('timerState', timer); }
+function saveSessions() { S.set('sessions', sessions); }
+function saveExpenses() { S.set('expenses', expenses); }
 
-// ─── Timer logic ──────────────────────────────────────────────────────────────
+// ─── Timer ────────────────────────────────────────────────────────────────────
 function currentElapsed() {
-  let elapsed = timer.accumulated;
-  if (timer.running && timer.startTime) elapsed += Date.now() - timer.startTime;
-  return elapsed;
+  let e = timer.accumulated;
+  if (timer.running && timer.startTime) e += Date.now() - timer.startTime;
+  return e;
 }
 
 function timerStart() {
   if (stopPending) return;
   timer.running = true;
   timer.startTime = Date.now();
-  saveTimer();
-  stopPending = false;
-  startTick();
-  updateUI();
+  saveTimer(); startTick(); updateUI();
 }
 
 function timerPause() {
   if (!timer.running) return;
   timer.accumulated += Date.now() - timer.startTime;
-  timer.running = false;
-  timer.startTime = null;
-  saveTimer();
-  clearInterval(ticker); ticker = null;
-  updateUI();
+  timer.running = false; timer.startTime = null;
+  saveTimer(); clearInterval(ticker); ticker = null; updateUI();
 }
 
 function timerStop() {
@@ -522,33 +527,23 @@ function timerStop() {
   document.getElementById('noteRow').style.display = 'flex';
   document.getElementById('sessionNote').focus();
   document.getElementById('btnStart').disabled = true;
-  document.getElementById('btnStop').disabled = true;
+  document.getElementById('btnStop').disabled  = true;
 }
 
 function confirmStop() {
-  const note = document.getElementById('sessionNote').value.trim();
+  const note     = document.getElementById('sessionNote').value.trim();
   const duration = timer.accumulated;
   if (duration < 1000) { cancelStop(); return; }
-  const now = new Date();
-  const endTs = now.getTime();
+  const endTs   = Date.now();
   const startTs = endTs - duration;
-  sessions.unshift({
-    id: uid(),
-    date: todayStr(),
-    startTime: startTs,
-    endTime: endTs,
-    duration,
-    note
-  });
+  sessions.unshift({ id: uid(), date: todayStr(), startTime: startTs, endTime: endTs, duration, note });
   saveSessions();
-  // reset
   timer = { running: false, startTime: null, accumulated: 0 };
   saveTimer();
   stopPending = false;
   document.getElementById('noteRow').style.display = 'none';
   document.getElementById('sessionNote').value = '';
-  updateUI();
-  renderSessions();
+  updateUI(); renderSessions();
 }
 
 function cancelStop() {
@@ -563,55 +558,67 @@ function startTick() {
   ticker = setInterval(updateTimerDisplay, 1000);
 }
 
-// ─── Render Timer UI ──────────────────────────────────────────────────────────
+// ─── Manual session ───────────────────────────────────────────────────────────
+function addManualSession() {
+  const date  = document.getElementById('man-date').value  || todayStr();
+  const start = document.getElementById('man-start').value;
+  const end   = document.getElementById('man-end').value;
+  const note  = document.getElementById('man-note').value.trim();
+  if (!start || !end) { alert('Indica a hora de início e fim.'); return; }
+
+  const startTs = new Date(`${date}T${start}:00`).getTime();
+  const endTs   = new Date(`${date}T${end}:00`).getTime();
+  if (endTs <= startTs) { alert('A hora de fim tem de ser depois do início.'); return; }
+
+  const duration = endTs - startTs;
+  sessions.unshift({ id: uid(), date, startTime: startTs, endTime: endTs, duration, note });
+  saveSessions();
+  document.getElementById('man-start').value = '';
+  document.getElementById('man-end').value   = '';
+  document.getElementById('man-note').value  = '';
+  renderSessions(); updateUI();
+}
+
+// ─── UI update ────────────────────────────────────────────────────────────────
 function updateTimerDisplay() {
-  const el = document.getElementById('timerDisplay');
-  el.textContent = fmtMs(currentElapsed());
+  document.getElementById('timerDisplay').textContent = fmtMs(currentElapsed());
 }
 
 function updateUI() {
-  const el = document.getElementById('timerDisplay');
+  const el       = document.getElementById('timerDisplay');
   const statusEl = document.getElementById('timerStatus');
   const btnStart = document.getElementById('btnStart');
   const btnPause = document.getElementById('btnPause');
   const btnStop  = document.getElementById('btnStop');
 
   updateTimerDisplay();
-
-  if (stopPending) return; // handled separately
+  if (stopPending) return;
 
   if (timer.running) {
     el.className = 'timer-display running';
-    statusEl.textContent = 'running';
-    btnStart.disabled = true;
-    btnPause.disabled = false;
-    btnStop.disabled  = false;
+    statusEl.textContent = 'a trabalhar';
+    btnStart.disabled = true; btnPause.disabled = false; btnStop.disabled = false;
     startTick();
   } else if (timer.accumulated > 0) {
     el.className = 'timer-display paused';
-    statusEl.textContent = 'paused';
-    btnStart.textContent = '▶ Resume';
-    btnStart.disabled = false;
-    btnPause.disabled = true;
-    btnStop.disabled  = false;
+    statusEl.textContent = 'pausado';
+    btnStart.textContent = '▶ Retomar';
+    btnStart.disabled = false; btnPause.disabled = true; btnStop.disabled = false;
   } else {
     el.className = 'timer-display idle';
-    statusEl.textContent = 'ready';
-    btnStart.textContent = '▶ Start';
-    btnStart.disabled = false;
-    btnPause.disabled = true;
-    btnStop.disabled  = true;
+    statusEl.textContent = 'pronto';
+    btnStart.textContent = '▶ Iniciar';
+    btnStart.disabled = false; btnPause.disabled = true; btnStop.disabled = true;
   }
 
-  // Stats
-  const today = todayStr();
-  const wk = weekStart();
-  const todayMs = sessions.filter(s => s.date === today).reduce((a, s) => a + s.duration, 0);
-  const weekMs  = sessions.filter(s => s.date >= wk).reduce((a, s) => a + s.duration, 0);
-  const todayExp = expenses.filter(e => e.date === today).reduce((a, e) => a + Number(e.amount), 0);
+  const today  = todayStr();
+  const wk     = weekStart();
+  const todayMs  = sessions.filter(s => s.date === today).reduce((a,s) => a + s.duration, 0);
+  const weekMs   = sessions.filter(s => s.date >= wk).reduce((a,s) => a + s.duration, 0);
+  const todayExp = expenses.filter(e => e.date === today).reduce((a,e) => a + Number(e.amount), 0);
 
-  document.getElementById('statTodayHours').textContent   = fmtHm(todayMs);
-  document.getElementById('statWeekHours').textContent    = fmtHm(weekMs);
+  document.getElementById('statTodayHours').textContent    = fmtHm(todayMs);
+  document.getElementById('statWeekHours').textContent     = fmtHm(weekMs);
   document.getElementById('statTodayExpenses').textContent = fmtMoney(todayExp, settings.currency);
 }
 
@@ -619,24 +626,23 @@ function updateUI() {
 function renderSessions() {
   const container = document.getElementById('sessionsList');
   if (!sessions.length) {
-    container.innerHTML = '<div class="empty">No sessions yet. Hit Start to begin.</div>';
+    container.innerHTML = '<div class="empty">Sem sessões. Clica em Iniciar para começar.</div>';
     return;
   }
-  // Group by date
   const grouped = {};
   sessions.forEach(s => { (grouped[s.date] = grouped[s.date] || []).push(s); });
 
   let html = '';
   Object.keys(grouped).sort((a,b) => b.localeCompare(a)).forEach(date => {
     const dayMs = grouped[date].reduce((a,s) => a + s.duration, 0);
-    const label = date === todayStr() ? 'Today' : new Date(date+'T12:00').toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
+    const label = date === todayStr() ? 'Hoje' : fmtDate(date, {weekday:'short', day:'numeric', month:'short'});
     html += `<div style="display:flex;justify-content:space-between;align-items:center;margin:16px 0 8px">
       <span style="font-size:13px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px">${label}</span>
       <span style="font-size:13px;color:var(--muted)">${fmtHm(dayMs)} total</span>
     </div>`;
     grouped[date].forEach(s => {
-      const start = new Date(s.startTime).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
-      const end   = new Date(s.endTime  ).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+      const start = new Date(s.startTime).toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit'});
+      const end   = new Date(s.endTime  ).toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit'});
       html += `<div class="session-item">
         <div class="session-left">
           <span class="session-time">${start} → ${end}</span>
@@ -644,7 +650,7 @@ function renderSessions() {
         </div>
         <div class="session-right">
           <span class="session-duration">${fmtHm(s.duration)}</span>
-          <button class="btn-del" onclick="deleteSession('${s.id}')" title="Delete">✕</button>
+          <button class="btn-del" onclick="deleteSession('${s.id}')" title="Apagar">✕</button>
         </div>
       </div>`;
     });
@@ -654,9 +660,7 @@ function renderSessions() {
 
 function deleteSession(id) {
   sessions = sessions.filter(s => s.id !== id);
-  saveSessions();
-  renderSessions();
-  updateUI();
+  saveSessions(); renderSessions(); updateUI();
 }
 
 // ─── Expenses ─────────────────────────────────────────────────────────────────
@@ -669,19 +673,18 @@ function addExpense() {
   saveExpenses();
   document.getElementById('exp-desc').value   = '';
   document.getElementById('exp-amount').value = '';
-  renderExpenses();
-  updateUI();
+  renderExpenses(); updateUI();
 }
 
 function renderExpenses() {
   const container = document.getElementById('expensesList');
   if (!expenses.length) {
-    container.innerHTML = '<div class="empty">No expenses yet.</div>';
+    container.innerHTML = '<div class="empty">Sem despesas.</div>';
     return;
   }
   let html = '';
   expenses.forEach(e => {
-    const d = new Date(e.date+'T12:00').toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+    const d = fmtDate(e.date, {day:'numeric', month:'short', year:'numeric'});
     html += `<div class="expense-item">
       <div class="expense-left">
         <span class="expense-desc">${escHtml(e.description)}</span>
@@ -689,7 +692,7 @@ function renderExpenses() {
       </div>
       <div class="expense-right">
         <span class="expense-amount">${fmtMoney(e.amount, settings.currency)}</span>
-        <button class="btn-del" onclick="deleteExpense('${e.id}')" title="Delete">✕</button>
+        <button class="btn-del" onclick="deleteExpense('${e.id}')" title="Apagar">✕</button>
       </div>
     </div>`;
   });
@@ -698,73 +701,66 @@ function renderExpenses() {
 
 function deleteExpense(id) {
   expenses = expenses.filter(e => e.id !== id);
-  saveExpenses();
-  renderExpenses();
-  updateUI();
+  saveExpenses(); renderExpenses(); updateUI();
 }
 
 // ─── Report ───────────────────────────────────────────────────────────────────
 function buildReport() {
   const from = document.getElementById('rep-from').value;
   const to   = document.getElementById('rep-to').value;
-  if (!from || !to) { alert('Please select a date range.'); return; }
+  if (!from || !to) { alert('Seleciona um intervalo de datas.'); return; }
 
   const filtSessions = sessions.filter(s => s.date >= from && s.date <= to);
   const filtExpenses = expenses.filter(e => e.date >= from && e.date <= to);
 
-  const totalMs  = filtSessions.reduce((a,s) => a + s.duration, 0);
-  const totalHrs = totalMs / 3600000;
+  const totalMs     = filtSessions.reduce((a,s) => a + s.duration, 0);
+  const totalHrs    = totalMs / 3600000;
   const hoursAmount = totalHrs * (settings.rate || 0);
-  const expTotal = filtExpenses.reduce((a,e) => a + Number(e.amount), 0);
-  const grandTotal = hoursAmount + expTotal;
-
+  const expTotal    = filtExpenses.reduce((a,e) => a + Number(e.amount), 0);
+  const grandTotal  = hoursAmount + expTotal;
   const cur = settings.currency;
   const sym = currSymbol(cur);
 
-  // Invoice meta for print
-  const fromDate = new Date(from+'T12:00').toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
-  const toDate   = new Date(to  +'T12:00').toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
-  document.getElementById('invoiceFrom').textContent = settings.yourName ? `From: ${settings.yourName}` : '';
+  const fromDate = fmtDate(from, {day:'numeric', month:'long', year:'numeric'});
+  const toDate   = fmtDate(to,   {day:'numeric', month:'long', year:'numeric'});
+  document.getElementById('invoiceFrom').textContent = settings.yourName ? `De: ${settings.yourName}` : '';
   document.getElementById('invoiceMeta').innerHTML = `
-    <div><strong>To:</strong> ${escHtml(settings.clientName || 'Client')}</div>
-    <div><strong>Period:</strong> ${fromDate} – ${toDate}</div>
-    <div><strong>Generated:</strong> ${new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})}</div>
+    <div><strong>Para:</strong> ${escHtml(settings.clientName || 'Cliente')}</div>
+    <div><strong>Período:</strong> ${fromDate} – ${toDate}</div>
+    <div><strong>Emitida em:</strong> ${fmtDate(todayStr(), {day:'numeric', month:'long', year:'numeric'})}</div>
   `;
   document.getElementById('invoiceFooter').innerHTML =
-    `Thank you for your business. · ${settings.yourName || ''}`;
+    `Obrigado pela preferência. · ${settings.yourName || ''}`;
 
-  // Summary boxes
   let html = `<div class="summary-grid">
     <div class="summary-box">
       <div class="summary-box-value c-accent">${fmtHm(totalMs)}</div>
-      <div class="summary-box-label">Hours Worked</div>
+      <div class="summary-box-label">Horas Trabalhadas</div>
     </div>
     <div class="summary-box">
       <div class="summary-box-value c-yellow">${fmtMoney(expTotal, cur)}</div>
-      <div class="summary-box-label">Expenses</div>
+      <div class="summary-box-label">Despesas</div>
     </div>
     <div class="summary-box">
       <div class="summary-box-value c-green">${fmtMoney(grandTotal, cur)}</div>
-      <div class="summary-box-label">Total to Bill</div>
+      <div class="summary-box-label">Total a Faturar</div>
     </div>
   </div>`;
 
-  // Sessions table
   if (filtSessions.length) {
     html += `<div class="report-section">
-      <div class="report-section-title">Work Sessions</div>
+      <div class="report-section-title">Sessões de Trabalho</div>
       <table>
-        <thead><tr><th>Date</th><th>Time</th><th>Duration</th><th>Notes</th>${settings.rate ? '<th style="text-align:right">Amount</th>' : ''}</tr></thead>
+        <thead><tr><th>Data</th><th>Hora</th><th>Duração</th><th>Notas</th>${settings.rate ? '<th style="text-align:right">Valor</th>' : ''}</tr></thead>
         <tbody>`;
-    // Group by day for cleaner display
     const grouped = {};
     filtSessions.forEach(s => { (grouped[s.date] = grouped[s.date] || []).push(s); });
     Object.keys(grouped).sort().forEach(date => {
       grouped[date].forEach(s => {
-        const d = new Date(date+'T12:00').toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
-        const start = new Date(s.startTime).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
-        const end   = new Date(s.endTime  ).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
-        const amt   = ((s.duration / 3600000) * (settings.rate || 0));
+        const d     = fmtDate(date, {weekday:'short', day:'numeric', month:'short'});
+        const start = new Date(s.startTime).toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit'});
+        const end   = new Date(s.endTime  ).toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit'});
+        const amt   = (s.duration / 3600000) * (settings.rate || 0);
         html += `<tr>
           <td>${d}</td>
           <td style="color:var(--muted);font-size:12px">${start}–${end}</td>
@@ -783,15 +779,14 @@ function buildReport() {
     html += `</tbody></table></div>`;
   }
 
-  // Expenses table
   if (filtExpenses.length) {
     html += `<div class="report-section">
-      <div class="report-section-title">Expenses</div>
+      <div class="report-section-title">Despesas</div>
       <table>
-        <thead><tr><th>Date</th><th>Description</th><th style="text-align:right">Amount</th></tr></thead>
+        <thead><tr><th>Data</th><th>Descrição</th><th style="text-align:right">Valor</th></tr></thead>
         <tbody>`;
     filtExpenses.slice().sort((a,b)=>a.date.localeCompare(b.date)).forEach(e => {
-      const d = new Date(e.date+'T12:00').toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
+      const d = fmtDate(e.date, {weekday:'short', day:'numeric', month:'short'});
       html += `<tr>
         <td>${d}</td>
         <td>${escHtml(e.description)}</td>
@@ -799,15 +794,14 @@ function buildReport() {
       </tr>`;
     });
     html += `<tr style="font-weight:600">
-      <td colspan="2" style="text-align:right;padding-top:12px">Expenses Total</td>
+      <td colspan="2" style="text-align:right;padding-top:12px">Total Despesas</td>
       <td style="text-align:right;padding-top:12px">${fmtMoney(expTotal,cur)}</td>
     </tr></tbody></table></div>`;
   }
 
-  // Grand total row
   html += `<div class="report-section" style="background:var(--surface2)">
     <div style="display:flex;justify-content:space-between;align-items:center">
-      <span style="font-size:15px;font-weight:700">TOTAL DUE</span>
+      <span style="font-size:15px;font-weight:700">TOTAL A PAGAR</span>
       <span style="font-size:24px;font-weight:700;color:var(--green)">${fmtMoney(grandTotal,cur)}</span>
     </div>
   </div>`;
@@ -816,10 +810,10 @@ function buildReport() {
 }
 
 function printReport() {
-  const from = document.getElementById('rep-from').value;
-  const to   = document.getElementById('rep-to').value;
   if (!document.getElementById('reportOutput').innerHTML) {
-    if (!from || !to) { alert('Generate a report first.'); return; }
+    const from = document.getElementById('rep-from').value;
+    const to   = document.getElementById('rep-to').value;
+    if (!from || !to) { alert('Gera primeiro um relatório.'); return; }
     buildReport();
   }
   window.print();
@@ -841,52 +835,40 @@ function openSettings() {
   document.getElementById('cfg-currency').value   = settings.currency   || 'EUR';
   document.getElementById('settingsModal').classList.add('open');
 }
-function closeSettings() {
-  document.getElementById('settingsModal').classList.remove('open');
-}
+function closeSettings() { document.getElementById('settingsModal').classList.remove('open'); }
 function saveSettings() {
   settings.yourName   = document.getElementById('cfg-yourName').value.trim();
-  settings.clientName = document.getElementById('cfg-clientName').value.trim() || 'Client';
+  settings.clientName = document.getElementById('cfg-clientName').value.trim() || 'Cliente';
   settings.rate       = parseFloat(document.getElementById('cfg-rate').value) || 0;
   settings.currency   = document.getElementById('cfg-currency').value;
   S.set('settings', settings);
-  closeSettings();
-  updateUI();
+  closeSettings(); updateUI();
 }
 
-// ─── Escape HTML ──────────────────────────────────────────────────────────────
 function escHtml(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
 (function init() {
-  // Header date
   document.getElementById('headerDate').textContent =
-    new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+    new Date().toLocaleDateString('pt-PT',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
 
-  // Default expense date to today
-  document.getElementById('exp-date').value = todayStr();
+  document.getElementById('exp-date').value  = todayStr();
+  document.getElementById('man-date').value  = todayStr();
 
-  // Default report range: current month
   const now = new Date();
   const y = now.getFullYear(), m = String(now.getMonth()+1).padStart(2,'0');
   document.getElementById('rep-from').value = `${y}-${m}-01`;
   document.getElementById('rep-to').value   = todayStr();
 
-  // Restore running timer if page was refreshed mid-session
-  if (timer.running && timer.startTime) {
-    startTick();
-  }
+  if (timer.running && timer.startTime) startTick();
 
-  // Close modal on overlay click
   document.getElementById('settingsModal').addEventListener('click', function(e) {
     if (e.target === this) closeSettings();
   });
 
-  updateUI();
-  renderSessions();
-  renderExpenses();
+  updateUI(); renderSessions(); renderExpenses();
 })();
 </script>
 </body>
