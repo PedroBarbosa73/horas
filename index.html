@@ -235,46 +235,67 @@
        PRINT / PDF STYLES
     ════════════════════════════════════════════════ */
     @media print {
-      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-      body { background: #fff; color: #111; font-family: 'Georgia', serif; }
+      /* Force all colours to light theme — override CSS variables */
+      * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        color: #111 !important;
+        background: #fff !important;
+        border-color: #ddd !important;
+        box-shadow: none !important;
+      }
+
+      body { font-family: 'Georgia', serif; font-size: 13px; }
 
       .no-print { display: none !important; }
+      .container { max-width: 100%; padding: 0 16px; }
 
-      .container { max-width: 100%; padding: 0; }
-
-      /* Hide everything except the invoice */
+      /* Hide everything except the report pane */
       .timer-card, .tabs, #pane-sessions, #pane-expenses { display: none !important; }
       #pane-report { display: block !important; }
-
       .report-controls, .btn-print { display: none !important; }
 
+      /* Invoice header */
       .invoice-header {
         display: flex !important;
         justify-content: space-between;
         align-items: flex-start;
-        margin-bottom: 32px;
-        padding-bottom: 20px;
-        border-bottom: 2px solid #111;
+        margin-bottom: 28px;
+        padding-bottom: 16px;
+        border-bottom: 2px solid #111 !important;
       }
-      .invoice-title { font-size: 36px; font-weight: 700; color: #111; }
-      .invoice-meta { text-align: right; font-size: 13px; line-height: 1.7; color: #444; }
-      .invoice-meta strong { color: #111; }
+      .invoice-title { font-size: 32px !important; font-weight: 700; }
+      .invoice-meta { text-align: right; font-size: 12px; line-height: 1.8; }
 
-      .summary-grid { margin-bottom: 24px; }
-      .summary-box { border: 1px solid #ddd; background: #f8f8f8 !important; }
-      .summary-box-value { color: #111 !important; font-size: 22px; }
-      .summary-box-label { color: #555 !important; }
+      /* Summary boxes */
+      .summary-grid { margin-bottom: 20px; }
+      .summary-box { border: 1px solid #ccc !important; background: #f5f5f5 !important; padding: 14px; }
+      .summary-box-value { font-size: 20px !important; font-weight: 700; }
+      .summary-box-label { font-size: 10px !important; color: #666 !important; }
+      .c-accent, .c-yellow, .c-green { color: #111 !important; }
 
-      .report-section { border: 1px solid #ddd; margin-bottom: 20px; }
-      .report-section-title { color: #555 !important; }
-      th { color: #555 !important; border-bottom: 1px solid #ddd !important; }
-      td { border-bottom: 1px solid #eee !important; }
+      /* Report sections */
+      .report-section { border: 1px solid #ccc !important; padding: 14px; margin-bottom: 14px; background: #fff !important; }
+      .report-section-title { font-size: 10px !important; color: #666 !important; margin-bottom: 10px; }
+      .report-section[style*="surface2"] { background: #f0f0f0 !important; }
 
+      table { width: 100%; border-collapse: collapse; }
+      th { color: #555 !important; font-size: 10px !important; border-bottom: 1px solid #ccc !important; padding: 6px 8px; }
+      td { padding: 7px 8px; border-bottom: 1px solid #eee !important; font-size: 12px; }
+      td[style*="muted"] { color: #666 !important; }
+
+      /* Grand total row */
+      .report-section span { color: #111 !important; }
+
+      /* Footer */
       .invoice-footer {
         display: block !important;
-        margin-top: 40px; padding-top: 20px;
-        border-top: 1px solid #ddd;
-        font-size: 12px; color: #888; text-align: center;
+        margin-top: 32px;
+        padding-top: 14px;
+        border-top: 1px solid #ccc !important;
+        font-size: 11px;
+        color: #888 !important;
+        text-align: center;
       }
     }
     .invoice-header { display: none; }
