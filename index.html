@@ -751,7 +751,7 @@ function buildReport() {
     html += `<div class="report-section">
       <div class="report-section-title">Sessões de Trabalho</div>
       <table>
-        <thead><tr><th>Data</th><th>Hora</th><th>Duração</th><th>Notas</th>${settings.rate ? '<th style="text-align:right">Valor</th>' : ''}</tr></thead>
+        <thead><tr><th>Data</th><th>Hora</th><th>Duração</th>${settings.rate ? '<th style="text-align:right">Valor</th>' : ''}</tr></thead>
         <tbody>`;
     const grouped = {};
     filtSessions.forEach(s => { (grouped[s.date] = grouped[s.date] || []).push(s); });
@@ -765,14 +765,13 @@ function buildReport() {
           <td>${d}</td>
           <td style="color:var(--muted);font-size:12px">${start}–${end}</td>
           <td>${fmtHm(s.duration)}</td>
-          <td style="color:var(--muted)">${escHtml(s.note || '')}</td>
           ${settings.rate ? `<td style="text-align:right">${fmtMoney(amt,cur)}</td>` : ''}
         </tr>`;
       });
     });
     if (settings.rate) {
       html += `<tr style="font-weight:600">
-        <td colspan="4" style="text-align:right;padding-top:12px">Subtotal (${totalHrs.toFixed(2)}h × ${sym}${settings.rate}/h)</td>
+        <td colspan="3" style="text-align:right;padding-top:12px">Subtotal (${totalHrs.toFixed(2)}h × ${sym}${settings.rate}/h)</td>
         <td style="text-align:right;padding-top:12px">${fmtMoney(hoursAmount,cur)}</td>
       </tr>`;
     }
