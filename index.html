@@ -4,6 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Horas</title>
+  <meta name="theme-color" content="#0e0e14">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Horas">
   <style>
     :root {
       --bg: #0e0e14;
@@ -128,6 +134,12 @@
       transition: color 0.15s;
     }
     .btn-del:hover { color: var(--red); }
+    .btn-edit {
+      background: none; border: none; cursor: pointer;
+      color: var(--muted); font-size: 14px; padding: 4px; line-height: 1;
+      transition: color 0.15s;
+    }
+    .btn-edit:hover { color: var(--accent); }
 
     /* ── Form card ───────────────────────────────── */
     .form-card {
@@ -218,6 +230,16 @@
     }
     .btn-outline:hover { border-color: var(--accent); }
 
+    /* ── Backup reminder ─────────────────────────── */
+    .backup-banner {
+      display: none; align-items: center; gap: 10px; flex-wrap: wrap;
+      background: var(--surface); border: 1px solid var(--yellow);
+      border-radius: var(--radius); padding: 12px 16px; margin-bottom: 16px;
+      font-size: 13px;
+    }
+    .backup-banner.show { display: flex; }
+    .backup-banner span { flex: 1; min-width: 180px; }
+
     /* ── Empty state ─────────────────────────────── */
     .empty { text-align: center; padding: 32px; color: var(--muted); font-size: 14px; }
 
@@ -229,6 +251,24 @@
     }
     .note-input:focus { outline: none; border-color: var(--accent); }
     .note-input::placeholder { color: var(--muted); }
+
+    /* ── Phone ───────────────────────────────────── */
+    @media (max-width: 520px) {
+      .header { padding: 12px 16px; }
+      .today-label { font-size: 12px; }
+      .container { padding: 16px; }
+      .timer-card { padding: 28px 16px 22px; }
+      .timer-display { font-size: 60px; letter-spacing: -2px; }
+      .timer-buttons { flex-wrap: nowrap; gap: 8px; }
+      .timer-buttons .btn { flex: 1; padding: 11px 8px; }
+      .today-stats { gap: 12px; justify-content: space-around; }
+      .stat-value { font-size: 18px; white-space: nowrap; }
+      .tab { padding: 10px 12px; font-size: 13px; white-space: nowrap; }
+      .summary-grid { grid-template-columns: 1fr; }
+      .note-row { flex-wrap: wrap; }
+      .note-input { flex-basis: 100%; }
+      .modal { margin: 16px; padding: 22px; }
+    }
 
     /* ════════════════════════════════════════════════
        PRINT / PDF STYLES
@@ -337,6 +377,37 @@
   </div>
 </div>
 
+<!-- Edit Session Modal -->
+<div class="modal-overlay no-print" id="editModal">
+  <div class="modal">
+    <div class="modal-title">Editar Sessão</div>
+    <div class="form-row" style="margin-bottom:12px">
+      <div class="form-group">
+        <label>Data</label>
+        <input class="form-control" id="edit-date" type="date">
+      </div>
+    </div>
+    <div class="form-row" style="margin-bottom:12px">
+      <div class="form-group">
+        <label>Início</label>
+        <input class="form-control" id="edit-start" type="time">
+      </div>
+      <div class="form-group">
+        <label>Fim</label>
+        <input class="form-control" id="edit-end" type="time">
+      </div>
+    </div>
+    <div class="form-group" style="margin-bottom:12px">
+      <label>Nota</label>
+      <input class="form-control" id="edit-note" placeholder="Descrição do trabalho">
+    </div>
+    <div class="modal-footer">
+      <button class="btn-outline" onclick="closeEdit()">Cancelar</button>
+      <button class="btn btn-start" onclick="saveEdit()">Guardar</button>
+    </div>
+  </div>
+</div>
+
 <!-- Header -->
 <div class="header no-print">
   <div class="logo">⏱ Horas</div>
@@ -356,6 +427,13 @@
 </div>
 
 <div class="container">
+
+  <!-- Backup reminder -->
+  <div class="backup-banner no-print" id="backupBanner">
+    <span id="backupBannerText"></span>
+    <button class="btn btn-start" style="padding:8px 14px" onclick="exportData()">⬇ Exportar</button>
+    <button class="btn-outline" style="padding:8px 14px" onclick="snoozeBackup()">Mais tarde</button>
+  </div>
 
   <!-- Timer Card -->
   <div class="timer-card no-print">
@@ -578,17 +656,54 @@ function addManualSession() {
   const note  = document.getElementById('man-note').value.trim();
   if (!start || !end) { alert('Indica a hora de início e fim.'); return; }
 
-  const startTs = new Date(`${date}T${start}:00`).getTime();
-  const endTs   = new Date(`${date}T${end}:00`).getTime();
-  if (endTs <= startTs) { alert('A hora de fim tem de ser depois do início.'); return; }
-
-  const duration = endTs - startTs;
-  sessions.unshift({ id: uid(), date, startTime: startTs, endTime: endTs, duration, note });
+  const range = sessionRange(date, start, end);
+  if (!range) return;
+  sessions.unshift({ id: uid(), date, ...range, note });
   saveSessions();
   document.getElementById('man-start').value = '';
   document.getElementById('man-end').value   = '';
   document.getElementById('man-note').value  = '';
   renderSessions(); updateUI();
+}
+
+// End before start means the session crossed midnight
+function sessionRange(date, start, end) {
+  const startTs = new Date(`${date}T${start}:00`).getTime();
+  let endTs     = new Date(`${date}T${end}:00`).getTime();
+  if (endTs === startTs) { alert('A hora de fim tem de ser diferente do início.'); return null; }
+  if (endTs < startTs) {
+    const d = new Date(`${date}T${end}:00`); d.setDate(d.getDate() + 1);
+    endTs = d.getTime();
+  }
+  return { startTime: startTs, endTime: endTs, duration: endTs - startTs };
+}
+
+// ─── Edit session ─────────────────────────────────────────────────────────────
+let editingId = null;
+const hhmm = ts => { const d = new Date(ts); return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`; };
+
+function openEdit(id) {
+  const s = sessions.find(s => s.id === id);
+  if (!s) return;
+  editingId = id;
+  document.getElementById('edit-date').value  = s.date;
+  document.getElementById('edit-start').value = hhmm(s.startTime);
+  document.getElementById('edit-end').value   = hhmm(s.endTime);
+  document.getElementById('edit-note').value  = s.note || '';
+  document.getElementById('editModal').classList.add('open');
+}
+function closeEdit() { editingId = null; document.getElementById('editModal').classList.remove('open'); }
+function saveEdit() {
+  const s = sessions.find(s => s.id === editingId);
+  if (!s) { closeEdit(); return; }
+  const date  = document.getElementById('edit-date').value;
+  const start = document.getElementById('edit-start').value;
+  const end   = document.getElementById('edit-end').value;
+  if (!date || !start || !end) { alert('Indica a data, hora de início e fim.'); return; }
+  const range = sessionRange(date, start, end);
+  if (!range) return;
+  Object.assign(s, { date, ...range, note: document.getElementById('edit-note').value.trim() });
+  saveSessions(); closeEdit(); renderSessions(); updateUI();
 }
 
 // ─── UI update ────────────────────────────────────────────────────────────────
@@ -662,6 +777,7 @@ function renderSessions() {
         </div>
         <div class="session-right">
           <span class="session-duration">${fmtHm(s.duration)}</span>
+          <button class="btn-edit" onclick="openEdit('${s.id}')" title="Editar">✎</button>
           <button class="btn-del" onclick="deleteSession('${s.id}')" title="Apagar">✕</button>
         </div>
       </div>`;
@@ -671,6 +787,7 @@ function renderSessions() {
 }
 
 function deleteSession(id) {
+  if (!confirm('Apagar esta sessão?')) return;
   sessions = sessions.filter(s => s.id !== id);
   saveSessions(); renderSessions(); updateUI();
 }
@@ -712,6 +829,7 @@ function renderExpenses() {
 }
 
 function deleteExpense(id) {
+  if (!confirm('Apagar esta despesa?')) return;
   expenses = expenses.filter(e => e.id !== id);
   saveExpenses(); renderExpenses(); updateUI();
 }
@@ -762,7 +880,7 @@ function buildReport() {
     html += `<div class="report-section">
       <div class="report-section-title">Sessões de Trabalho</div>
       <table>
-        <thead><tr><th>Data</th><th>Hora</th><th>Duração</th>${settings.rate ? '<th style="text-align:right">Valor</th>' : ''}</tr></thead>
+        <thead><tr><th>Data</th><th>Hora</th><th>Descrição</th><th>Duração</th>${settings.rate ? '<th style="text-align:right">Valor</th>' : ''}</tr></thead>
         <tbody>`;
     const grouped = {};
     filtSessions.forEach(s => { (grouped[s.date] = grouped[s.date] || []).push(s); });
@@ -773,16 +891,17 @@ function buildReport() {
         const end   = new Date(s.endTime  ).toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit'});
         const amt   = (s.duration / 3600000) * (settings.rate || 0);
         html += `<tr>
-          <td>${d}</td>
-          <td style="color:var(--muted);font-size:12px">${start}–${end}</td>
-          <td>${fmtHm(s.duration)}</td>
+          <td style="white-space:nowrap">${d}</td>
+          <td style="color:var(--muted);font-size:12px;white-space:nowrap">${start}–${end}</td>
+          <td>${escHtml(s.note || '')}</td>
+          <td style="white-space:nowrap">${fmtHm(s.duration)}</td>
           ${settings.rate ? `<td style="text-align:right">${fmtMoney(amt,cur)}</td>` : ''}
         </tr>`;
       });
     });
     if (settings.rate) {
       html += `<tr style="font-weight:600">
-        <td colspan="3" style="text-align:right;padding-top:12px">Subtotal (${totalHrs.toFixed(2)}h × ${sym}${settings.rate}/h)</td>
+        <td colspan="4" style="text-align:right;padding-top:12px">Subtotal (${totalHrs.toFixed(2)}h × ${sym}${settings.rate}/h)</td>
         <td style="text-align:right;padding-top:12px">${fmtMoney(hoursAmount,cur)}</td>
       </tr>`;
     }
@@ -864,6 +983,28 @@ function exportData() {
   a.download = `horas-backup-${todayStr()}.json`;
   a.click();
   URL.revokeObjectURL(a.href);
+  backup.lastExport = Date.now();
+  S.set('backup', backup);
+  checkBackup();
+}
+
+const DAY_MS = 86400000;
+let backup = S.get('backup') || { lastExport: null, since: Date.now(), snoozeUntil: 0 };
+
+function checkBackup() {
+  const banner = document.getElementById('backupBanner');
+  const days = Math.floor((Date.now() - (backup.lastExport || backup.since)) / DAY_MS);
+  const show = sessions.length > 0 && days >= 30 && Date.now() > backup.snoozeUntil;
+  banner.classList.toggle('show', show);
+  if (show) document.getElementById('backupBannerText').textContent = backup.lastExport
+    ? `A última cópia de segurança foi há ${days} dias. Exporta os teus dados para não os perderes.`
+    : 'Ainda não fizeste uma cópia de segurança. Exporta os teus dados para não os perderes.';
+}
+
+function snoozeBackup() {
+  backup.snoozeUntil = Date.now() + 7 * DAY_MS;
+  S.set('backup', backup);
+  checkBackup();
 }
 
 function importData(input) {
@@ -907,8 +1048,16 @@ function escHtml(s) {
   document.getElementById('settingsModal').addEventListener('click', function(e) {
     if (e.target === this) closeSettings();
   });
+  document.getElementById('editModal').addEventListener('click', function(e) {
+    if (e.target === this) closeEdit();
+  });
 
-  updateUI(); renderSessions(); renderExpenses();
+  S.set('backup', backup);
+  updateUI(); renderSessions(); renderExpenses(); checkBackup();
+
+  if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  }
 })();
 </script>
 </body>
